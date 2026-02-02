@@ -1,27 +1,522 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Flawed AI Content Archive</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <header class="site-header">
-    <h1>Flawed AI Content Archive</h1>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="browse.html">Browse</a>
-      <a href="submit.html">Submit</a>
-    </nav>
-  </header>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>AI-Generated Content on the Chinese Internet</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap"
+			rel="stylesheet"
+		/>
+		<style>
+			:root {
+				--accent-blue: #62a9e8;
+				--bg-left: #e9f4ff;
+				--bg-right: #ffdff0;
+				--card-bg: #ffffff;
+				--shadow: rgba(106, 137, 167, 0.18);
+				--pill-bg: #eaf2fb;
+				--text: #4a5a6a;
+				--tag-bg: #f3f7ff;
+				--warning: #f7b4c7;
+			}
 
-  <main class="container">
-    <p>This is the homepage. You can add a project description here.</p>
-  </main>
+			* {
+				box-sizing: border-box;
+			}
 
-  <footer class="footer">
-    <p>Footer text goes here.</p>
-  </footer>
-</body>
+			body {
+				margin: 0;
+				min-height: 100vh;
+				font-family: "Nunito", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+					sans-serif;
+				color: var(--text);
+				background: linear-gradient(120deg, var(--bg-left), var(--bg-right));
+				position: relative;
+				overflow-x: hidden;
+			}
+
+			body::before {
+				content: "";
+				position: fixed;
+				inset: 0;
+				background-image: url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 12 L9 10 L12 12 L10 15 Z' fill='%23ffffff' fill-opacity='0.5'/%3E%3Cpath d='M60 22 L63 20 L66 22 L64 25 Z' fill='%23ffffff' fill-opacity='0.4'/%3E%3Cpath d='M100 50 L103 48 L106 50 L104 53 Z' fill='%23ffffff' fill-opacity='0.35'/%3E%3Cpath d='M24 72 L27 70 L30 72 L28 75 Z' fill='%23ffffff' fill-opacity='0.35'/%3E%3Cpath d='M84 88 L87 86 L90 88 L88 91 Z' fill='%23ffffff' fill-opacity='0.3'/%3E%3C/svg%3E");
+				opacity: 0.18;
+				pointer-events: none;
+				z-index: 0;
+			}
+
+			header {
+				background: #ffffffcc;
+				backdrop-filter: blur(10px);
+				position: sticky;
+				top: 0;
+				z-index: 10;
+				box-shadow: 0 8px 24px rgba(99, 135, 170, 0.12);
+			}
+
+			.nav {
+				max-width: 1200px;
+				margin: 0 auto;
+				padding: 16px 24px;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				gap: 18px;
+				flex-wrap: wrap;
+			}
+
+			.nav a {
+				text-decoration: none;
+				color: var(--accent-blue);
+				font-weight: 600;
+				padding: 8px 18px;
+				border-radius: 999px;
+				transition: all 0.2s ease;
+			}
+
+			.nav a:hover {
+				background: var(--pill-bg);
+			}
+
+			.nav a.active {
+				background: var(--pill-bg);
+				font-weight: 700;
+			}
+
+			main {
+				max-width: 1200px;
+				margin: 0 auto;
+				padding: 56px 24px 96px;
+				position: relative;
+				z-index: 1;
+			}
+
+			.page-title {
+				text-align: center;
+				color: var(--accent-blue);
+				font-size: clamp(2rem, 3vw, 3.1rem);
+				margin: 28px 0 8px;
+			}
+
+			.subtitle {
+				text-align: center;
+				margin: 0 0 40px;
+				color: #6f7f8f;
+				font-size: 1.05rem;
+			}
+
+			.toolbar {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 16px;
+				justify-content: center;
+				margin-bottom: 36px;
+			}
+
+			.search {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+				background: #ffffffcc;
+				border-radius: 999px;
+				padding: 10px 18px;
+				box-shadow: 0 12px 30px var(--shadow);
+			}
+
+			.search input {
+				border: none;
+				outline: none;
+				background: transparent;
+				font-size: 0.95rem;
+				min-width: 220px;
+				color: var(--text);
+			}
+
+			.filters {
+				display: flex;
+				gap: 10px;
+				flex-wrap: wrap;
+			}
+
+			.filter-chip {
+				border: none;
+				background: var(--pill-bg);
+				color: var(--accent-blue);
+				padding: 8px 16px;
+				border-radius: 999px;
+				font-weight: 600;
+				cursor: pointer;
+				transition: all 0.2s ease;
+			}
+
+			.filter-chip.active,
+			.filter-chip:hover {
+				background: #d9e8fb;
+			}
+
+			.category-tabs {
+				display: flex;
+				justify-content: center;
+				gap: 12px;
+				margin-bottom: 24px;
+			}
+
+			.category-tab {
+				border: none;
+				background: var(--pill-bg);
+				color: var(--accent-blue);
+				padding: 10px 20px;
+				border-radius: 999px;
+				font-weight: 600;
+				cursor: pointer;
+				transition: all 0.2s ease;
+			}
+
+			.category-tab.active {
+				background: var(--accent-blue);
+				color: white;
+			}
+
+			.category-tab:hover {
+				background: #d9e8fb;
+			}
+
+			.category-tab.active:hover {
+				background: #4a9fe0;
+			}
+
+			.card-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+				gap: 28px;
+			}
+
+			.card {
+				background: var(--card-bg);
+				border-radius: 26px;
+				padding: 22px;
+				box-shadow: 0 18px 32px var(--shadow);
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				text-align: center;
+				transition: transform 0.2s ease, box-shadow 0.2s ease;
+				cursor: pointer;
+			}
+
+			.card:hover {
+				transform: translateY(-4px);
+				box-shadow: 0 24px 40px rgba(99, 135, 170, 0.22);
+			}
+
+			.thumb {
+				width: 100%;
+				height: auto;
+				max-height: 200px;
+				border-radius: 20px;
+				border: 3px solid #d9e8fb;
+				object-fit: contain;
+				margin-bottom: 16px;
+			}
+
+			.card h3 {
+				margin: 0 0 6px;
+				color: var(--accent-blue);
+				font-size: 1.1rem;
+			}
+
+			.card p {
+				margin: 0 0 12px;
+				font-size: 0.92rem;
+				color: #7a8a99;
+			}
+
+			.tags {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 8px;
+				justify-content: center;
+				margin-bottom: 10px;
+			}
+
+			.tag {
+				background: var(--tag-bg);
+				color: var(--accent-blue);
+				padding: 5px 10px;
+				border-radius: 999px;
+				font-size: 0.75rem;
+				font-weight: 600;
+			}
+
+			.meta {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+				font-size: 0.78rem;
+				color: #93a0ad;
+			}
+
+			.warning {
+				background: var(--warning);
+				color: #ffffff;
+				padding: 3px 8px;
+				border-radius: 999px;
+				font-weight: 600;
+			}
+
+			.hidden {
+				display: none;
+			}
+
+			@media (max-width: 900px) {
+				main {
+					padding: 44px 18px 72px;
+				}
+
+				.thumb {
+					width: 150px;
+					height: 150px;
+				}
+			}
+
+			@media (max-width: 600px) {
+				.search input {
+					min-width: 160px;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			<nav class="nav" aria-label="Primary">
+				<a class="active" href="#">Home</a>
+				<a href="#browse">Browse</a>
+				<a href="#submit">Submit</a>
+				<a href="#methods">Methods</a>
+				<a href="#ethics">Ethics/Terms</a>
+			</nav>
+		</header>
+
+		<main>
+			<h1 class="page-title">AI-Generated Content on the Chinese Internet</h1>
+			<p class="subtitle">Curating mistakes to spark public debate.</p>
+
+			<section class="toolbar" id="browse">
+				<div class="category-tabs" aria-label="Browse categories">
+					<button class="category-tab active" data-category="vtuber">VTuber</button>
+					<button class="category-tab" data-category="micro-drama">Micro-short drama</button>
+				</div>
+				<div class="search" role="search">
+					<span aria-hidden="true">🔎</span>
+					<input
+						id="searchInput"
+						type="search"
+						placeholder="Search artifacts, flaws, tags"
+						aria-label="Search artifacts"
+					/>
+				</div>
+				<div class="filters" aria-label="Filter by flaw type">
+					<button class="filter-chip active" data-filter="all">All</button>
+					<button class="filter-chip" data-filter="misinformation">Misinformation</button>
+					<button class="filter-chip" data-filter="visual">Visual Glitch</button>
+					<button class="filter-chip" data-filter="translation">Bad Translation</button>
+					<button class="filter-chip" data-filter="bias">Bias</button>
+				</div>
+			</section>
+
+			<section class="card-grid" id="gallery">
+				<article class="card" data-tags="misinformation bias" data-title="星瞳" data-category="vtuber">
+					<img
+						class="thumb"
+						src="https://i0.hdslb.com/bfs/archive/adb25c385c9e2a0dca186b92e971693af2ca29ba.jpg"
+						alt="星瞳"
+					/>
+					<h3>星瞳</h3>
+					<p>Fabricated forecast shared as a real alert.</p>
+					<div class="tags">
+						<span class="tag">weather</span>
+						<span class="tag">alert</span>
+						<span class="tag">misinformation</span>
+					</div>
+					<div class="meta">
+						<span>Flaw: Misinformation</span>
+						<span class="warning">CW</span>
+					</div>
+				</article>
+
+				<article class="card" data-tags="visual" data-title="Stitched Street" data-category="vtuber">
+					<img
+						class="thumb"
+						src="https://images.unsplash.com/photo-1520962917680-99e0d58d8001?auto=format&fit=crop&w=400&q=80"
+						alt="Pastel city street"
+					/>
+					<h3>Stitched Street</h3>
+					<p>Street scene with duplicated storefronts.</p>
+					<div class="tags">
+						<span class="tag">urban</span>
+						<span class="tag">duplication</span>
+						<span class="tag">visual</span>
+					</div>
+					<div class="meta">
+						<span>Flaw: Visual glitch</span>
+					</div>
+				</article>
+
+				<article class="card" data-tags="translation" data-title="Menu Mishap" data-category="micro-drama">
+					<img
+						class="thumb"
+						src="https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=400&q=80"
+						alt="Cafe menu board"
+					/>
+					<h3>Menu Mishap</h3>
+					<p>Translated menu labels become nonsense.</p>
+					<div class="tags">
+						<span class="tag">translation</span>
+						<span class="tag">language</span>
+						<span class="tag">humor</span>
+					</div>
+					<div class="meta">
+						<span>Flaw: Bad translation</span>
+					</div>
+				</article>
+
+				<article class="card" data-tags="bias misinformation" data-title="Hiring Snapshot" data-category="micro-drama">
+					<img
+						class="thumb"
+						src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=400&q=80"
+						alt="Work desk with laptop"
+					/>
+					<h3>Hiring Snapshot</h3>
+					<p>Model summary skews toward one group.</p>
+					<div class="tags">
+						<span class="tag">hiring</span>
+						<span class="tag">fairness</span>
+						<span class="tag">bias</span>
+					</div>
+					<div class="meta">
+						<span>Flaw: Bias</span>
+						<span class="warning">CW</span>
+					</div>
+				</article>
+
+				<article class="card" data-tags="visual translation" data-title="Label Drift" data-category="vtuber">
+					<img
+						class="thumb"
+						src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=400&q=80"
+						alt="Abstract pastel shapes"
+					/>
+					<h3>Label Drift</h3>
+					<p>Image tags mismatch the subject matter.</p>
+					<div class="tags">
+						<span class="tag">tagging</span>
+						<span class="tag">mismatch</span>
+						<span class="tag">visual</span>
+					</div>
+					<div class="meta">
+						<span>Flaw: Visual glitch</span>
+					</div>
+				</article>
+
+				<article class="card" data-tags="misinformation" data-title="Health Myth" data-category="micro-drama">
+					<img
+						class="thumb"
+						src="https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?auto=format&fit=crop&w=400&q=80"
+						alt="Soft pastel medical tools"
+					/>
+					<h3>Health Myth</h3>
+					<p>Generated advice missing key safety notes.</p>
+					<div class="tags">
+						<span class="tag">health</span>
+						<span class="tag">advice</span>
+						<span class="tag">misinformation</span>
+					</div>
+					<div class="meta">
+						<span>Flaw: Misinformation</span>
+						<span class="warning">CW</span>
+					</div>
+				</article>
+			</section>
+
+			<section id="submit" style="margin-top: 64px; text-align: center;">
+				<div
+					style="
+						max-width: 720px;
+						margin: 0 auto;
+						background: rgba(255, 255, 255, 0.9);
+						border-radius: 28px;
+						padding: 32px;
+						box-shadow: 0 18px 32px var(--shadow);
+					"
+				>
+					<h2 style="color: var(--accent-blue); margin-top: 0;">Submit an Artifact</h2>
+					<p style="color: #7a8a99;">
+						Share AI outputs with clear context, tags, and any safety notes so the
+						community can learn and discuss responsibly.
+					</p>
+					<button
+						style="
+							border: none;
+							background: var(--accent-blue);
+							color: white;
+							padding: 12px 26px;
+							border-radius: 999px;
+							font-weight: 700;
+							cursor: pointer;
+							box-shadow: 0 12px 24px rgba(98, 169, 232, 0.35);
+						"
+					>
+						Open Submission Form
+					</button>
+				</div>
+			</section>
+		</main>
+
+		<script>
+			const filterButtons = document.querySelectorAll(".filter-chip");
+			const categoryTabs = document.querySelectorAll(".category-tab");
+			const cards = document.querySelectorAll(".card");
+			const searchInput = document.getElementById("searchInput");
+
+			const updateCards = () => {
+				const activeFilter = document.querySelector(".filter-chip.active").dataset.filter;
+				const activeCategory = document.querySelector(".category-tab.active").dataset.category;
+				const query = searchInput.value.trim().toLowerCase();
+
+				cards.forEach((card) => {
+					const tags = card.dataset.tags;
+					const title = card.dataset.title.toLowerCase();
+					const description = card.querySelector("p").textContent.toLowerCase();
+					const category = card.dataset.category;
+					const matchesFilter =
+						activeFilter === "all" || tags.includes(activeFilter);
+					const matchesCategory = category === activeCategory;
+					const matchesQuery =
+						!query || title.includes(query) || description.includes(query) || tags.includes(query);
+
+					card.classList.toggle("hidden", !(matchesFilter && matchesCategory && matchesQuery));
+				});
+			};
+
+			filterButtons.forEach((button) => {
+				button.addEventListener("click", () => {
+					filterButtons.forEach((btn) => btn.classList.remove("active"));
+					button.classList.add("active");
+					updateCards();
+				});
+			});
+
+			categoryTabs.forEach((tab) => {
+				tab.addEventListener("click", () => {
+					categoryTabs.forEach((t) => t.classList.remove("active"));
+					tab.classList.add("active");
+					updateCards();
+				});
+			});
+
+			searchInput.addEventListener("input", updateCards);
+		</script>
+	</body>
 </html>
